@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class Main {
         System.out.println("Выберите требуемое действие:\n" +
                 "   1 - сгенерировать ключи;\n" +
                 "   2 - зашифровать файл;\n" +
-                "   3 - расшифровать расшифровать;\n");
+                "   3 - расшифровать расшифровать.");
         int mode = scanner.nextInt();
         scanner.nextLine();
         switch (mode) {
@@ -40,18 +39,13 @@ public class Main {
     private static void decrypt() throws Exception {
         System.out.println("Введите ключ.");
         password = new BigInteger(scanner.next());
-        System.out.println("Введите путь к файлу.");
-        String path = scanner.next();
-        File file = new File(path);
-        String fileStr = FileToString(file);
+       System.out.println("Введите формат файла.");
+        String format = scanner.next();
         byte[] key = (password.mod(module).toByteArray());
         AES aes = new AES(Arrays.copyOfRange(key, 0, 16));
-        String decrypted = aes.decrypt(fileStr);
-        path = path.replace("_enc.","_dec.");
-        FileOutputStream fileOuputStream = new FileOutputStream(path);
-        fileOuputStream.write(decrypted.getBytes());
-        fileOuputStream.flush();
-        fileOuputStream.close();
+        aes.decrypt(format);
+
+
     }
 
     private static void encrypt() throws Exception {
@@ -60,15 +54,9 @@ public class Main {
         System.out.println("Введите путь к файлу.");
         String path = scanner.next();
         File file = new File(path);
-        String fileStr = FileToString(file);
         byte[] key = (password.mod(module).toByteArray());
         AES aes = new AES(Arrays.copyOfRange(key, 0, 16));
-        String encrypted = aes.encrypt(fileStr);
-        path = path.replace(".","_enc.");
-        FileOutputStream fileOuputStream = new FileOutputStream(path);
-        fileOuputStream.write(encrypted.getBytes());
-        fileOuputStream.flush();
-        fileOuputStream.close();
+        aes.encrypt(file);
     }
 
     private static String FileToString(File file) throws IOException {
